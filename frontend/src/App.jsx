@@ -45,7 +45,9 @@ export default function App() {
       // 1. Fetch Categories
       const catRes = await fetch(`${API_BASE}/categories`);
       const catData = await catRes.json();
-      if (catData.success) setCategories(catData.data);
+      if (catData.success && catData.data && catData.data.length > 0) {
+        setCategories(catData.data);
+      }
 
       // 2. Fetch Summary Metrics
       const sumRes = await fetch(`${API_BASE}/dashboard/summary`);
@@ -91,7 +93,7 @@ export default function App() {
       });
       const data = await res.json();
       if (data.success) {
-        fetchData();
+        await fetchData();
       } else {
         alert('Stock In Error: ' + data.error);
       }
@@ -109,12 +111,39 @@ export default function App() {
       });
       const data = await res.json();
       if (data.success) {
-        fetchData();
+        await fetchData();
       } else {
         alert('Stock Out Error: ' + data.error);
       }
     } catch (err) {
       alert('Failed to execute Stock Out');
+    }
+  };
+
+  // 1-Click Quick Restock from Shopping List Modal
+  const handleQuickRestock = async (item) => {
+    try {
+      // Set expiration date to 30 days from today by default for restock
+      const defaultExpDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+      const res = await fetch(`${API_BASE}/transactions/in`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          item_id: item.item_id,
+          quantity: item.suggested_reorder_quantity,
+          purchase_date: new Date().toISOString().split('T')[0],
+          expiration_date: defaultExpDate,
+          reason: 'Quick Restock'
+        })
+      });
+      const data = await res.json();
+      if (data.success) {
+        await fetchData();
+      } else {
+        alert('Restock Error: ' + data.error);
+      }
+    } catch (err) {
+      alert('Failed to restock item');
     }
   };
 
@@ -127,7 +156,7 @@ export default function App() {
       });
       const data = await res.json();
       if (data.success) {
-        fetchData();
+        await fetchData();
         setModalSelectedItem(data.data);
         setIsStockInOpen(true);
       } else {
@@ -143,8 +172,11 @@ export default function App() {
       
       {/* Navbar Header */}
       <Header
-        summary={summary}
-        onOpenShoppingList={() => setIsShoppingListOpen(true)}
+        shoppingListCount={shoppingList.length}
+        onOpenShoppingList={() => {
+          fetchData();
+          setIsShoppingListOpen(true);
+        }}
         onRefresh={fetchData}
       />
 
@@ -241,6 +273,13 @@ export default function App() {
         isOpen={isShoppingListOpen}
         onClose={() => setIsShoppingListOpen(false)}
         shoppingList={shoppingList}
+        onQuickRestock={handleQuickRestock}
+        onCustomStockIn={(item) => {
+          setIsShoppingListOpen(false);
+          const fullItem = items.find(i => String(i.id) === String(item.item_id)) || item;
+          setModalSelectedItem(fullItem);
+          setIsStockInOpen(true);
+        }}
       />
 
       <NewItemModal

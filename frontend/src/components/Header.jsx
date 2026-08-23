@@ -1,7 +1,7 @@
 import React from 'react';
 import { Refrigerator, ShoppingBag, RefreshCw } from 'lucide-react';
 
-export default function Header({ summary, onOpenShoppingList, onRefresh }) {
+export default function Header({ shoppingListCount = 0, onOpenShoppingList, onRefresh }) {
   return (
     <header className="glass-panel" style={{ padding: '16px 24px', marginBottom: '24px', borderRadius: '0 0 20px 20px' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px' }}>
@@ -37,7 +37,7 @@ export default function Header({ summary, onOpenShoppingList, onRefresh }) {
             style={{ position: 'relative' }}
           >
             <ShoppingBag size={18} /> Reorder Shopping List
-            {summary && summary.low_stock_count > 0 && (
+            {shoppingListCount > 0 && (
               <span style={{
                 position: 'absolute',
                 top: '-6px',
@@ -54,7 +54,7 @@ export default function Header({ summary, onOpenShoppingList, onRefresh }) {
                 justifyContent: 'center',
                 boxShadow: '0 0 8px rgba(239, 68, 68, 0.6)'
               }}>
-                {summary.low_stock_count}
+                {shoppingListCount}
               </span>
             )}
           </button>
