@@ -700,12 +700,12 @@ CREATE TABLE inventory_transactions (
     add_footer(s12, 12)
 
     # ==========================================
-    # SLIDE 13: SIMPLIFIED PROTOTYPE SUMMARY & VALUE
+    # SLIDE 13: SIMPLIFIED PROTOTYPE SUMMARY & LIVE URL
     # ==========================================
     s13 = prs.slides.add_slide(blank_layout)
-    add_header(s13, "12. Summary & Key Prototype Benefits")
+    add_header(s13, "12. Summary & Live Prototype Deployment")
 
-    # 4 clean, simple, high-impact summary cards in a 2x2 grid
+    # 4 clean summary cards in a 2x2 grid (adjusted height to accommodate live link banner)
     summary_cards = [
         ("1. Accurate Stock Tracking", "Maintains exact real-time quantities and batch expiration dates across all 6 food groups with zero data loss.", COLOR_PRIMARY),
         ("2. Instant Material Discovery", "Category filter dropdowns and keyword search in Stock-In/Out modals allow users to find items in seconds.", COLOR_EMERALD),
@@ -716,15 +716,40 @@ CREATE TABLE inventory_transactions (
     for idx, (stitle, sdesc, scolor) in enumerate(summary_cards):
         r = idx // 2
         c = idx % 2
-        card = create_card(s13, 1.0 + c * 5.8, 1.5 + r * 2.6, 5.5, 2.3, stitle, scolor)
-        tb = s13.shapes.add_textbox(Inches(1.2 + c * 5.8), Inches(2.1 + r * 2.6), Inches(5.1), Inches(1.5))
+        card = create_card(s13, 1.0 + c * 5.8, 1.38 + r * 2.2, 5.5, 2.05, stitle, scolor)
+        tb = s13.shapes.add_textbox(Inches(1.2 + c * 5.8), Inches(1.92 + r * 2.2), Inches(5.1), Inches(1.35))
         tf = tb.text_frame
         tf.word_wrap = True
         p = tf.paragraphs[0]
         p.text = sdesc
-        p.font.size = Pt(12)
+        p.font.size = Pt(11)
         p.font.color.rgb = COLOR_TEXT_MAIN
-        p.line_spacing = 1.3
+        p.line_spacing = 1.25
+
+    # Live Vercel Deployment Link Banner
+    live_banner = s13.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(1.0), Inches(5.95), Inches(11.3), Inches(0.95))
+    live_banner.fill.solid()
+    live_banner.fill.fore_color.rgb = COLOR_NAVY
+    live_banner.line.color.rgb = COLOR_EMERALD
+    live_banner.line.width = Pt(2)
+
+    tb_live = s13.shapes.add_textbox(Inches(1.2), Inches(6.0), Inches(10.9), Inches(0.85))
+    tf_l = tb_live.text_frame
+    tf_l.word_wrap = True
+    
+    p_l1 = tf_l.paragraphs[0]
+    p_l1.text = "🌐 LIVE PRODUCTION DEPLOYMENT (VERCEL)"
+    p_l1.font.size = Pt(10)
+    p_l1.font.bold = True
+    p_l1.font.color.rgb = COLOR_ACCENT
+    
+    p_l2 = tf_l.add_paragraph()
+    p_l2.text = "https://refrigerator-inventory-system.vercel.app/"
+    p_l2.font.size = Pt(15)
+    p_l2.font.bold = True
+    p_l2.font.color.rgb = COLOR_EMERALD
+    p_l2.space_before = Pt(2)
+
     add_footer(s13, 13)
 
     prs.save(OUTPUT_PPTX)
