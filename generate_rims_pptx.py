@@ -1,97 +1,91 @@
 import os
+import sys
 from pptx import Presentation
 from pptx.util import Inches, Pt
-from pptx.dml.color import RGBColor
-from pptx.enum.text import PP_ALIGN, MSO_ANCHOR
+from pptx.enum.text import PP_ALIGN
 from pptx.enum.shapes import MSO_SHAPE
+from pptx.dml.color import RGBColor
 
-ROOT_DIR = r"d:\SE Assignment-4"
-OUTPUT_PPTX = os.path.join(ROOT_DIR, "RIMS_System_Specification.pptx")
-
-# Professional Color Palette
-COLOR_NAVY = RGBColor(15, 23, 42)       # #0F172A - Deep Slate/Navy
-COLOR_PRIMARY = RGBColor(37, 99, 235)   # #2563EB - Royal Blue
-COLOR_DARK_BLUE = RGBColor(30, 64, 175) # #1E40AF - Dark Blue
-COLOR_ACCENT = RGBColor(14, 165, 233)   # #0EA5E9 - Sky Blue
-COLOR_EMERALD = RGBColor(16, 185, 129)  # #10B981 - Green
-COLOR_AMBER = RGBColor(245, 158, 11)    # #F59E0B - Amber
-COLOR_ROSE = RGBColor(239, 68, 68)      # #EF4444 - Red
-COLOR_BG_LIGHT = RGBColor(248, 250, 252)# #F8FAFC - Off-white
-COLOR_CARD_BG = RGBColor(241, 245, 249) # #F1F5F9 - Card Gray
-COLOR_BORDER = RGBColor(203, 213, 225)  # #CBD5E1 - Border
-COLOR_TEXT_MAIN = RGBColor(15, 23, 42)  # #0F172A
-COLOR_TEXT_MUTED = RGBColor(71, 85, 105)# #475569
-COLOR_WHITE = RGBColor(255, 255, 255)
-
-TOTAL_SLIDES = 13
-
-def create_presentation():
+def build_presentation():
     prs = Presentation()
     prs.slide_width = Inches(13.333)
     prs.slide_height = Inches(7.5)
+
     blank_layout = prs.slide_layouts[6]
+    TOTAL_SLIDES = 11
 
-    def add_header(slide, title_text, category_text="PROTOTYPE SYSTEM SPECIFICATION", is_dark=False):
-        top_bar = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0), Inches(0), Inches(13.333), Inches(1.15))
-        top_bar.fill.solid()
-        top_bar.fill.fore_color.rgb = COLOR_NAVY if not is_dark else RGBColor(10, 15, 30)
-        top_bar.line.color.rgb = COLOR_PRIMARY
-        top_bar.line.width = Pt(0)
+    # --- Color Palette ---
+    COLOR_BG = RGBColor(248, 250, 252)        # Slate 50
+    COLOR_CARD_BG = RGBColor(255, 255, 255)   # Pure White
+    COLOR_CARD_BORDER = RGBColor(203, 213, 225) # Slate 300
+    COLOR_NAVY = RGBColor(15, 23, 42)          # Slate 900
+    COLOR_PRIMARY = RGBColor(2, 132, 199)      # Sky 600
+    COLOR_DARK_BLUE = RGBColor(30, 58, 138)    # Blue 900
+    COLOR_ACCENT = RGBColor(14, 165, 233)      # Sky 500
+    COLOR_EMERALD = RGBColor(16, 185, 129)     # Emerald 500
+    COLOR_AMBER = RGBColor(245, 158, 11)       # Amber 500
+    COLOR_ROSE = RGBColor(239, 68, 68)         # Rose 500
+    COLOR_PURPLE = RGBColor(139, 92, 246)      # Purple 500
+    COLOR_TEXT_MAIN = RGBColor(30, 41, 59)     # Slate 800
+    COLOR_TEXT_MUTED = RGBColor(100, 116, 139) # Slate 500
+    COLOR_WHITE = RGBColor(255, 255, 255)
+    COLOR_LINE = RGBColor(148, 163, 184)       # Slate 400
 
-        accent_line = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0), Inches(1.13), Inches(13.333), Inches(0.04))
-        accent_line.fill.solid()
-        accent_line.fill.fore_color.rgb = COLOR_PRIMARY
-        accent_line.line.fill.background()
+    def add_header(slide, title_text, category_text="PROTOTYPE SYSTEM SPECIFICATION"):
+        # Top banner background bar
+        bar = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0), Inches(0), Inches(13.333), Inches(1.15))
+        bar.fill.solid()
+        bar.fill.fore_color.rgb = COLOR_NAVY
+        bar.line.fill.background()
 
-        cat_box = slide.shapes.add_textbox(Inches(0.8), Inches(0.12), Inches(11.5), Inches(0.3))
-        tf_cat = cat_box.text_frame
-        p_cat = tf_cat.paragraphs[0]
-        p_cat.text = category_text.upper()
-        p_cat.font.size = Pt(10)
-        p_cat.font.bold = True
-        p_cat.font.color.rgb = COLOR_ACCENT
-        p_cat.font.name = "Arial"
+        # Category Tracker
+        tb_cat = slide.shapes.add_textbox(Inches(0.8), Inches(0.12), Inches(11.5), Inches(0.3))
+        tf_cat = tb_cat.text_frame
+        p_c = tf_cat.paragraphs[0]
+        p_c.text = category_text.upper()
+        p_c.font.size = Pt(9.5)
+        p_c.font.bold = True
+        p_c.font.color.rgb = COLOR_ACCENT
 
-        title_box = slide.shapes.add_textbox(Inches(0.8), Inches(0.38), Inches(11.5), Inches(0.65))
-        tf_title = title_box.text_frame
-        p_title = tf_title.paragraphs[0]
-        p_title.text = title_text
-        p_title.font.size = Pt(22)
-        p_title.font.bold = True
-        p_title.font.color.rgb = COLOR_WHITE
-        p_title.font.name = "Arial"
+        # Main Slide Title
+        tb_title = slide.shapes.add_textbox(Inches(0.8), Inches(0.38), Inches(11.5), Inches(0.65))
+        tf_title = tb_title.text_frame
+        p_t = tf_title.paragraphs[0]
+        p_t.text = title_text
+        p_t.font.size = Pt(20)
+        p_t.font.bold = True
+        p_t.font.color.rgb = COLOR_WHITE
 
     def add_footer(slide, slide_num):
-        footer_box = slide.shapes.add_textbox(Inches(0.8), Inches(7.08), Inches(11.733), Inches(0.3))
-        tf = footer_box.text_frame
-        p = tf.paragraphs[0]
-        p.text = f"Refrigerator & Pantry Inventory System Prototype   •   Slide {slide_num} of {TOTAL_SLIDES}"
-        p.font.size = Pt(9)
-        p.font.color.rgb = COLOR_TEXT_MUTED
-        p.font.name = "Arial"
+        tb_f = slide.shapes.add_textbox(Inches(0.8), Inches(7.05), Inches(11.733), Inches(0.35))
+        tf_f = tb_f.text_frame
+        p_f = tf_f.paragraphs[0]
+        p_f.text = f"Refrigerator & Pantry Inventory Subsystem (RIMS)   |   Prototype Engineering Specification   |   Slide {slide_num} of {TOTAL_SLIDES}"
+        p_f.font.size = Pt(9)
+        p_f.font.color.rgb = COLOR_TEXT_MUTED
 
-    def create_card(slide, left, top, width, height, title, header_bg=COLOR_PRIMARY):
+    def create_card(slide, left, top, width, height, title, header_color=COLOR_PRIMARY):
         card = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(left), Inches(top), Inches(width), Inches(height))
         card.fill.solid()
-        card.fill.fore_color.rgb = COLOR_WHITE
-        card.line.color.rgb = COLOR_BORDER
-        card.line.width = Pt(1)
+        card.fill.fore_color.rgb = COLOR_CARD_BG
+        card.line.color.rgb = COLOR_CARD_BORDER
+        card.line.width = Pt(1.5)
 
-        hbar = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(left), Inches(top), Inches(width), Inches(0.42))
-        hbar.fill.solid()
-        hbar.fill.fore_color.rgb = header_bg
-        hbar.line.fill.background()
-        tf_h = hbar.text_frame
+        h_bar = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(left), Inches(top), Inches(width), Inches(0.48))
+        h_bar.fill.solid()
+        h_bar.fill.fore_color.rgb = header_color
+        h_bar.line.fill.background()
+        
+        tf_h = h_bar.text_frame
         p_h = tf_h.paragraphs[0]
-        p_h.text = title
-        p_h.font.size = Pt(12)
+        p_h.text = f"  {title.upper()}"
+        p_h.font.size = Pt(10.5)
         p_h.font.bold = True
         p_h.font.color.rgb = COLOR_WHITE
-        p_h.alignment = PP_ALIGN.CENTER
         return card
 
     # ==========================================
-    # SLIDE 1: TITLE SLIDE (Dark Theme)
+    # SLIDE 1: TITLE SLIDE
     # ==========================================
     s1 = prs.slides.add_slide(blank_layout)
     bg1 = s1.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0), Inches(0), Inches(13.333), Inches(7.5))
@@ -99,83 +93,79 @@ def create_presentation():
     bg1.fill.fore_color.rgb = COLOR_NAVY
     bg1.line.fill.background()
 
-    tag1 = s1.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(1.0), Inches(1.4), Inches(4.2), Inches(0.45))
-    tag1.fill.solid()
-    tag1.fill.fore_color.rgb = RGBColor(30, 41, 59)
-    tag1.line.color.rgb = COLOR_PRIMARY
-    tag1.line.width = Pt(1.5)
-    p_tag = tag1.text_frame.paragraphs[0]
-    p_tag.text = "PROTOTYPE SPECIFICATION & BLUEPRINT"
-    p_tag.font.size = Pt(11)
-    p_tag.font.bold = True
-    p_tag.font.color.rgb = COLOR_ACCENT
-    p_tag.alignment = PP_ALIGN.CENTER
+    tb_sub = s1.shapes.add_textbox(Inches(1.2), Inches(1.5), Inches(10.9), Inches(0.5))
+    p_sub = tb_sub.text_frame.paragraphs[0]
+    p_sub.text = "PROTOTYPE SPECIFICATION & BLUEPRINT"
+    p_sub.font.size = Pt(14)
+    p_sub.font.bold = True
+    p_sub.font.color.rgb = COLOR_ACCENT
 
-    t_box1 = s1.shapes.add_textbox(Inches(1.0), Inches(2.1), Inches(11.3), Inches(2.2))
-    tf1 = t_box1.text_frame
-    p1 = tf1.paragraphs[0]
-    p1.text = "Refrigerator & Pantry Inventory System"
-    p1.font.size = Pt(36)
-    p1.font.bold = True
-    p1.font.color.rgb = COLOR_WHITE
+    tb_main = s1.shapes.add_textbox(Inches(1.2), Inches(2.1), Inches(10.9), Inches(2.2))
+    p_main = tb_main.text_frame.paragraphs[0]
+    p_main.text = "Refrigerator & Pantry\nInventory Management Subsystem"
+    p_main.font.size = Pt(36)
+    p_main.font.bold = True
+    p_main.font.color.rgb = COLOR_WHITE
 
-    p1_sub = tf1.add_paragraph()
-    p1_sub.text = "Smart Food Tracking, Category-Filtered Stock Management, Expiration Telemetry & Auto-Reordering"
-    p1_sub.font.size = Pt(16)
-    p1_sub.font.color.rgb = RGBColor(203, 213, 225)
-    p1_sub.space_before = Pt(12)
+    p_desc = tb_main.text_frame.add_paragraph()
+    p_desc.text = "Real-Time Stock Logging, 6 Food Categories, FEFO Expiration Alerts & Automated Reordering"
+    p_desc.font.size = Pt(14)
+    p_desc.font.color.rgb = COLOR_TEXT_MUTED
+    p_desc.space_before = Pt(14)
 
-    meta_info = [
-        ("CORE STACK", "Node / Express / SQLite"),
-        ("FRONTEND", "React 18 + Vite"),
-        ("CATEGORIES", "6 Food Groups"),
-        ("STATUS", "Fully Built & Live")
+    badges = [
+        ("Architecture", "Node / Express / SQLite", COLOR_PRIMARY),
+        ("Frontend", "React 18 + Vite", COLOR_ACCENT),
+        ("Storage Scope", "6 Food Categories", COLOR_EMERALD),
+        ("Live Deployment", "Vercel Cloud", COLOR_PURPLE)
     ]
-    for idx, (label, val) in enumerate(meta_info):
-        m_card = s1.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(1.0 + idx * 2.9), Inches(5.2), Inches(2.7), Inches(1.2))
-        m_card.fill.solid()
-        m_card.fill.fore_color.rgb = RGBColor(30, 41, 59)
-        m_card.line.color.rgb = RGBColor(51, 65, 85)
-        tf_m = m_card.text_frame
-        p_l = tf_m.paragraphs[0]
-        p_l.text = label
-        p_l.font.size = Pt(10)
-        p_l.font.bold = True
-        p_l.font.color.rgb = COLOR_ACCENT
-        p_v = tf_m.add_paragraph()
-        p_v.text = val
-        p_v.font.size = Pt(13)
-        p_v.font.bold = True
-        p_v.font.color.rgb = COLOR_WHITE
-        p_v.space_before = Pt(4)
+    for idx, (blabel, bval, bcol) in enumerate(badges):
+        bx = s1.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(1.2 + idx * 2.75), Inches(5.1), Inches(2.55), Inches(1.0))
+        bx.fill.solid()
+        bx.fill.fore_color.rgb = RGBColor(30, 41, 59)
+        bx.line.color.rgb = bcol
+        bx.line.width = Pt(1.5)
+        
+        tf_bx = bx.text_frame
+        p1 = tf_bx.paragraphs[0]
+        p1.text = blabel.upper()
+        p1.font.size = Pt(9)
+        p1.font.bold = True
+        p1.font.color.rgb = bcol
+        
+        p2 = tf_bx.add_paragraph()
+        p2.text = bval
+        p2.font.size = Pt(11)
+        p2.font.bold = True
+        p2.font.color.rgb = COLOR_WHITE
+        p2.space_before = Pt(3)
     add_footer(s1, 1)
 
     # ==========================================
-    # SLIDE 2: SCOPE & CORE FEATURES
+    # SLIDE 2: EXECUTIVE SUMMARY & PROTOTYPE SCOPE
     # ==========================================
     s2 = prs.slides.add_slide(blank_layout)
     add_header(s2, "1. Executive Summary & Prototype Scope")
-
-    features = [
-        ("Pantry & Refrigerator Tracking", "Centralizes all food items across 6 structured categories. Tracks net stock, individual intake batches, and metric units (kg, liters, units, g).", COLOR_PRIMARY),
-        ("Batch-Level Expiration Tracking", "Records distinct purchase and expiration dates for every batch. Automatically calculates nearest expiration date across active stock.", COLOR_DARK_BLUE),
-        ("Instant Modal Category Filters", "Interactive category selectors and keyword search inside Stock-In and Stock-Out modals for fast, immediate material location.", COLOR_ACCENT),
-        ("Multi-Tier Health Badges", "Real-time visual indicators: Sufficient (Green), Low Stock (Yellow), Expiring Soon (Orange), Expired (Red), and Out of Stock (Red).", COLOR_EMERALD),
-        ("3-Day Lookahead Expiration Alert", "Proactively scans active inventory and displays an urgent top alert banner for batches expiring within 3 days or already expired.", COLOR_AMBER),
-        ("Automated Reorder Shopping List", "Automatically generates replenishment lists when stock drops below minimum thresholds, with calculated order quantities.", COLOR_ROSE)
+    scope_cards = [
+        ("1. Real-Time Pantry Tracking", "Tracks exact physical stock levels across 6 distinct food categories with instant balance updates.", COLOR_PRIMARY),
+        ("2. Batch & Shelf-Life Management", "Maintains purchase and expiration dates per intake batch to enforce First-Expired, First-Out (FEFO) usage.", COLOR_DARK_BLUE),
+        ("3. Instant Material Discovery", "Equipped with live category dropdown filters and keyword search inside modals to locate materials immediately.", COLOR_EMERALD),
+        ("4. 5 Visual Telemetry Badges", "Real-time color-coded badges: Sufficient (🟢), Low Stock (🟡), Expiring Soon (🟠), Expired (🔴), and Out of Stock (🔴).", COLOR_AMBER),
+        ("5. Proactive 3-Day Alerts", "Top alert banner flags any batch expiring within 3 days to prioritize usage and eliminate food waste.", COLOR_ROSE),
+        ("6. Automated Reorder Engine", "Auto-calculates replenishment quantities when items fall below threshold, generating an instant Shopping List.", COLOR_PURPLE)
     ]
-
-    for idx, (ftitle, fdesc, fcolor) in enumerate(features):
+    for idx, (stitle, sdesc, scolor) in enumerate(scope_cards):
         r = idx // 3
         c = idx % 3
-        card = create_card(s2, 0.8 + c * 3.95, 1.4 + r * 2.65, 3.8, 2.45, ftitle, fcolor)
+        card = create_card(s2, 0.8 + c * 3.95, 1.4 + r * 2.65, 3.8, 2.45, stitle, scolor)
         tb = s2.shapes.add_textbox(Inches(0.95 + c * 3.95), Inches(1.95 + r * 2.65), Inches(3.5), Inches(1.8))
         tf = tb.text_frame
         tf.word_wrap = True
         p = tf.paragraphs[0]
-        p.text = fdesc
-        p.font.size = Pt(10.5)
+        p.text = sdesc
+        p.font.size = Pt(11)
         p.font.color.rgb = COLOR_TEXT_MAIN
+        p.line_spacing = 1.3
     add_footer(s2, 2)
 
     # ==========================================
@@ -183,265 +173,264 @@ def create_presentation():
     # ==========================================
     s3 = prs.slides.add_slide(blank_layout)
     add_header(s3, "2. Food Category Architecture & Storage Classification")
-
-    categories = [
-        ("1. Fruits", "4°C to 7°C", "Crisper storage; humidity controlled", "Gala Apples, Strawberries, Lemons, Bananas", COLOR_ROSE),
-        ("2. Vegetables", "2°C to 4°C", "Chilling-sensitive moisture preservation", "Baby Spinach, Carrots, Yellow Onions, Garlic", COLOR_EMERALD),
-        ("3. Dairy Products", "1°C to 3°C", "Strict cold-chain refrigeration", "Whole Milk, Cheddar Cheese, Butter, Heavy Cream", COLOR_PRIMARY),
-        ("4. Baking Products", "15°C to 20°C", "Dry pantry storage; sealed bins", "Flour, Granulated Sugar, Active Dry Yeast", COLOR_AMBER),
-        ("5. Dessert Products", "-18°C to 4°C", "Freezer & chilled dessert bases", "Dark Chocolate Chips, Tart Pastry Shells", RGBColor(168, 85, 247)),
-        ("6. Raw Materials & Other", "Ambient / Chilled", "Cooking staples, oils, seasonings, proteins", "Chicken Breast, Olive Oil, Black Pepper, Soy Sauce", RGBColor(100, 116, 139))
+    cats = [
+        ("1. Fruits", "Temp: 4°C - 8°C | High Humidity", "Apples, Bananas, Strawberries, Lemons", COLOR_ROSE),
+        ("2. Vegetables", "Temp: 2°C - 6°C | High Humidity", "Carrots, Spinach, Roma Tomatoes, Garlic", COLOR_EMERALD),
+        ("3. Dairy Products", "Temp: 1°C - 4°C | Controlled Chill", "Whole Milk, Cheddar Cheese, Butter, Heavy Cream", COLOR_ACCENT),
+        ("4. Baking Products", "Temp: 15°C - 20°C | Dry & Sealed", "All-Purpose Flour, Granulated Sugar, Dry Yeast", COLOR_AMBER),
+        ("5. Dessert Products", "Temp: 2°C - 5°C | Cool / Chilled", "Dark Chocolate Chips, Tart Shells, Maple Syrup", COLOR_PURPLE),
+        ("6. Raw Materials & Other", "Temp: 15°C - 22°C | Ambient Pantry", "Olive Oil, Soy Sauce, Black Pepper, Sea Salt", COLOR_DARK_BLUE)
     ]
-
-    for idx, (cname, temp, prof, ex, color) in enumerate(categories):
+    for idx, (cname, ctemp, citems, ccolor) in enumerate(cats):
         r = idx // 3
         c = idx % 3
-        card = create_card(s3, 0.8 + c * 3.95, 1.4 + r * 2.65, 3.8, 2.45, cname, color)
-        tb = s3.shapes.add_textbox(Inches(0.9 + c * 3.95), Inches(1.9 + r * 2.65), Inches(3.6), Inches(1.85))
+        create_card(s3, 0.8 + c * 3.95, 1.4 + r * 2.65, 3.8, 2.45, cname, ccolor)
+        tb = s3.shapes.add_textbox(Inches(0.95 + c * 3.95), Inches(1.95 + r * 2.65), Inches(3.5), Inches(1.8))
         tf = tb.text_frame
         tf.word_wrap = True
-        
-        p = tf.paragraphs[0]
-        p.text = f"• Recommended Temp: {temp}"
-        p.font.size = Pt(11)
-        p.font.bold = True
-        p.font.color.rgb = COLOR_TEXT_MAIN
-        
-        p2 = tf.add_paragraph()
-        p2.text = f"• Storage Profile: {prof}"
-        p2.font.size = Pt(10.5)
-        p2.font.color.rgb = COLOR_TEXT_MUTED
-        p2.space_before = Pt(4)
-
-        p3 = tf.add_paragraph()
-        p3.text = f"• Items: {ex}"
-        p3.font.size = Pt(10.5)
-        p3.font.color.rgb = COLOR_PRIMARY
-        p3.space_before = Pt(4)
-    add_footer(s3, 3)
-
-    # ==========================================
-    # SLIDE 4: SYSTEM ARCHITECTURE & TECH STACK
-    # ==========================================
-    s4 = prs.slides.add_slide(blank_layout)
-    add_header(s4, "3. Full-Stack System Architecture & Technology Stack")
-
-    tiers = [
-        ("Frontend Client Layer", "React 18 + Vite (Port 5173)", [
-            ("Glassmorphic Dashboard", "Real-time KPI metric counters and top alert banner."),
-            ("Category Grid & Table", "Searchable catalog with 6 food category tabs & health filters."),
-            ("Interactive Modals", "Dedicated Stock-In, Stock-Out, New Item, and Shopping List modals.")
-        ], COLOR_PRIMARY),
-        ("REST API Backend Layer", "Node.js + Express (Port 5000)", [
-            ("CRUD Operations", "Endpoints for category, item, and batch transaction management."),
-            ("Health Computation", "Real-time status calculation (Sufficient, Low Stock, Expiring)."),
-            ("Telemetry Service", "3-day expiration evaluation and shopping list deficit aggregation.")
-        ], COLOR_DARK_BLUE),
-        ("Data Persistence Layer", "SQLite Database (pantry.db)", [
-            ("ACID Reliability", "Atomically records all inflows and outflows with foreign key cascades."),
-            ("Normalized Tables", "3NF relational schema: categories, items, inventory_transactions."),
-            ("B-Tree Indexes", "Optimized lookups on category_id and expiration_date.")
-        ], COLOR_EMERALD)
-    ]
-
-    for idx, (tname, tsub, titems, tcolor) in enumerate(tiers):
-        create_card(s4, 0.8 + idx * 3.95, 1.4, 3.8, 5.35, tname, tcolor)
-        tb = s4.shapes.add_textbox(Inches(0.95 + idx * 3.95), Inches(1.95), Inches(3.5), Inches(4.6))
-        tf = tb.text_frame
-        tf.word_wrap = True
-
-        p_sub = tf.paragraphs[0]
-        p_sub.text = tsub.upper()
-        p_sub.font.size = Pt(10)
-        p_sub.font.bold = True
-        p_sub.font.color.rgb = COLOR_TEXT_MUTED
-
-        for iname, idesc in titems:
-            pi = tf.add_paragraph()
-            pi.text = f"▶ {iname}"
-            pi.font.size = Pt(11)
-            pi.font.bold = True
-            pi.font.color.rgb = COLOR_NAVY
-            pi.space_before = Pt(12)
-
-            pid = tf.add_paragraph()
-            pid.text = idesc
-            pid.font.size = Pt(10)
-            pid.font.color.rgb = COLOR_TEXT_MAIN
-            pid.space_before = Pt(2)
-    add_footer(s4, 4)
-
-    # ==========================================
-    # SLIDE 5: RELATIONAL DATA SCHEMA & TABLES
-    # ==========================================
-    s5 = prs.slides.add_slide(blank_layout)
-    add_header(s5, "4. Relational Database Schema & Entity Relationships")
-
-    create_card(s5, 0.8, 1.4, 5.7, 5.35, "Relational SQLite DDL Schema", COLOR_NAVY)
-    tb_ddl = s5.shapes.add_textbox(Inches(0.95), Inches(1.95), Inches(5.4), Inches(4.6))
-    tf_ddl = tb_ddl.text_frame
-    tf_ddl.word_wrap = True
-    p_ddl = tf_ddl.paragraphs[0]
-    p_ddl.text = """-- 1. Categories Table (1:N with Items)
-CREATE TABLE categories (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  name TEXT UNIQUE NOT NULL,
-  description TEXT
-);
-
--- 2. Items Table (1:N with Transactions)
-CREATE TABLE items (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  category_id INTEGER NOT NULL REFERENCES categories(id),
-  name TEXT NOT NULL,
-  unit TEXT NOT NULL, -- kg, liters, g, units
-  min_threshold REAL NOT NULL DEFAULT 1.0,
-  created_at TEXT DEFAULT CURRENT_TIMESTAMP
-);
-
--- 3. Inventory Transactions (Batch Inflow / Outflow)
-CREATE TABLE inventory_transactions (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  item_id INTEGER NOT NULL REFERENCES items(id),
-  transaction_type TEXT CHECK(transaction_type IN ('IN','OUT')),
-  quantity REAL NOT NULL,
-  purchase_date TEXT,
-  expiration_date TEXT,
-  timestamp TEXT DEFAULT CURRENT_TIMESTAMP,
-  reason TEXT
-);"""
-    p_ddl.font.size = Pt(9)
-    p_ddl.font.name = "Courier New"
-    p_ddl.font.color.rgb = COLOR_NAVY
-
-    create_card(s5, 6.8, 1.4, 5.7, 5.35, "Data Integrity & Calculation Rules", COLOR_PRIMARY)
-    tb_rules = s5.shapes.add_textbox(Inches(6.95), Inches(1.95), Inches(5.4), Inches(4.6))
-    tf_r = tb_rules.text_frame
-    tf_r.word_wrap = True
-    schema_rules = [
-        ("Current Stock Aggregation", "current_stock = SUM(CASE WHEN type='IN' THEN qty ELSE -qty END) calculated in real time per item."),
-        ("Nearest Expiration Lookup", "MIN(expiration_date) across positive active batches gives the nearest expiry badge."),
-        ("Foreign Key Cascades", "Deleting an item cleans up all associated transaction records safely."),
-        ("B-Tree Indexes", "idx_items_category and idx_transactions_exp ensure sub-5ms query response times.")
-    ]
-    for idx, (rname, rdesc) in enumerate(schema_rules):
-        p = tf_r.paragraphs[0] if idx == 0 else tf_r.add_paragraph()
-        p.text = f"✔ {rname}"
-        p.font.size = Pt(11)
-        p.font.bold = True
-        p.font.color.rgb = COLOR_PRIMARY
-        p.space_before = Pt(8) if idx > 0 else Pt(0)
-        
-        pd = tf_r.add_paragraph()
-        pd.text = rdesc
-        pd.font.size = Pt(9.5)
-        pd.font.color.rgb = COLOR_TEXT_MAIN
-        pd.space_before = Pt(2)
-    add_footer(s5, 5)
-
-    # ==========================================
-    # SLIDE 6: OBJECT-ORIENTED DOMAIN ENTITIES
-    # ==========================================
-    s6 = prs.slides.add_slide(blank_layout)
-    add_header(s6, "5. Object-Oriented Domain Entities & UML Structure")
-
-    classes = [
-        ("Category", "Domain Grouping", [
-            ("+ id: int [PK]", "+ name: string", "+ description: string"),
-            ("+ getItems(): List<InventoryItem>")
-        ]),
-        ("InventoryItem", "Core Catalog Entity", [
-            ("+ id: int [PK]", "+ categoryId: int [FK]", "+ name: string", "+ unit: string", "+ minThreshold: float"),
-            ("+ calculateCurrentStock(): float", "+ getNearestExpiration(): Date", "+ evaluateStatus(): StatusBadge")
-        ]),
-        ("InventoryTransaction", "Batch Movement Record", [
-            ("+ id: int [PK]", "+ itemId: int [FK]", "+ transactionType: 'IN'|'OUT'", "+ quantity: float"),
-            ("+ purchaseDate: Date", "+ expirationDate: Date", "+ reason: string")
-        ]),
-        ("AlertEngine", "Telemetry Service", [
-            ("+ evaluateExpiringLots(horizonDays=3): List<Alert>", "+ evaluateLowStock(): List<ShoppingListItem>")
-        ]),
-        ("StockInPayload", "Inbound DTO", [
-            ("+ itemId: int", "+ quantity: float", "+ purchaseDate: Date", "+ expirationDate: Date", "+ reason: string")
-        ]),
-        ("StockOutPayload", "Outbound DTO", [
-            ("+ itemId: int", "+ quantity: float", "+ reason: 'Used/Consumed'|'Spoiled/Expired'|'Transferred'")
-        ])
-    ]
-
-    for idx, (cname, ctype, mems) in enumerate(classes):
-        r = idx // 3
-        c = idx % 3
-        create_card(s6, 0.8 + c * 3.95, 1.4 + r * 2.65, 3.8, 2.45, f"{cname} | {ctype}", COLOR_NAVY)
-        tb = s6.shapes.add_textbox(Inches(0.9 + c * 3.95), Inches(1.9 + r * 2.65), Inches(3.6), Inches(1.85))
-        tf = tb.text_frame
-        tf.word_wrap = True
-        
-        for p_idx, mem in enumerate(mems):
-            p = tf.paragraphs[0] if p_idx == 0 else tf.add_paragraph()
-            p.text = mem if isinstance(mem, str) else "\n".join(mem)
-            p.font.size = Pt(9.5)
-            p.font.color.rgb = COLOR_TEXT_MAIN
-            p.space_before = Pt(4) if p_idx > 0 else Pt(0)
-    add_footer(s6, 6)
-
-    # ==========================================
-    # SLIDE 7: CRC CARDS SUITE
-    # ==========================================
-    s7 = prs.slides.add_slide(blank_layout)
-    add_header(s7, "6. Class-Responsibility-Collaborator (CRC) Cards")
-
-    crc_cards = [
-        ("InventoryItem", 
-         ["• Maintains item name, category, unit, and min threshold", "• Aggregates total stock balance from transactions", "• Evaluates health status (Sufficient, Low, Expiring)"],
-         ["• Category", "• InventoryTransaction", "• AlertEngine"], COLOR_PRIMARY),
-        ("InventoryTransaction", 
-         ["• Records individual batch inflow and consumption outflow", "• Tracks specific purchase and expiration dates", "• Logs reason classification"],
-         ["• InventoryItem"], COLOR_DARK_BLUE),
-        ("AlertEngine", 
-         ["• Scans batch expiration dates against today's date", "• Emits 3-day lookahead Expiring Soon alerts", "• Compiles Low Stock items into Shopping List"],
-         ["• InventoryItem", "• InventoryTransaction"], COLOR_EMERALD)
-    ]
-
-    for idx, (cname, resps, collabs, color) in enumerate(crc_cards):
-        create_card(s7, 0.8 + idx * 3.95, 1.4, 3.8, 5.35, cname, color)
-        tb = s7.shapes.add_textbox(Inches(0.95 + idx * 3.95), Inches(1.95), Inches(3.5), Inches(4.6))
-        tf = tb.text_frame
-        tf.word_wrap = True
-
         p1 = tf.paragraphs[0]
-        p1.text = "RESPONSIBILITIES (What it Does):"
+        p1.text = f"STORAGE PROFILE:\n{ctemp}"
         p1.font.size = Pt(10)
         p1.font.bold = True
         p1.font.color.rgb = COLOR_NAVY
-
-        for r in resps:
-            pr = tf.add_paragraph()
-            pr.text = r
-            pr.font.size = Pt(9.5)
-            pr.font.color.rgb = COLOR_TEXT_MAIN
-            pr.space_before = Pt(3)
-
         p2 = tf.add_paragraph()
-        p2.text = "COLLABORATORS (Interacts With):"
+        p2.text = f"PROTOTYPE ITEMS:\n{citems}"
         p2.font.size = Pt(10)
-        p2.font.bold = True
-        p2.font.color.rgb = COLOR_PRIMARY
-        p2.space_before = Pt(14)
+        p2.font.color.rgb = COLOR_TEXT_MAIN
+        p2.space_before = Pt(8)
+    add_footer(s3, 3)
 
-        for c in collabs:
-            pc = tf.add_paragraph()
-            pc.text = c
-            pc.font.size = Pt(9.5)
+    # ==========================================
+    # SLIDE 4: OBJECT-ORIENTED UML CLASS DIAGRAM
+    # ==========================================
+    s4 = prs.slides.add_slide(blank_layout)
+    add_header(s4, "3. Object-Oriented UML Class Diagram")
+
+    # Function to draw a 3-compartment UML Class Box
+    def draw_uml_class(slide, left, top, width, height, class_name, stereotype, attributes, methods, header_color=COLOR_NAVY):
+        # Outer container box
+        box = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(left), Inches(top), Inches(width), Inches(height))
+        box.fill.solid()
+        box.fill.fore_color.rgb = COLOR_CARD_BG
+        box.line.color.rgb = header_color
+        box.line.width = Pt(1.5)
+
+        # 1. Header Compartment (Class Name & Stereotype)
+        h_height = 0.58
+        hdr = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(left), Inches(top), Inches(width), Inches(h_height))
+        hdr.fill.solid()
+        hdr.fill.fore_color.rgb = header_color
+        hdr.line.fill.background()
+        tf_h = hdr.text_frame
+        tf_h.word_wrap = True
+        p_st = tf_h.paragraphs[0]
+        p_st.text = f"«{stereotype}»"
+        p_st.font.size = Pt(8)
+        p_st.font.bold = True
+        p_st.font.color.rgb = COLOR_ACCENT
+        p_st.alignment = PP_ALIGN.CENTER
+        
+        p_cn = tf_h.add_paragraph()
+        p_cn.text = class_name
+        p_cn.font.size = Pt(11)
+        p_cn.font.bold = True
+        p_cn.font.color.rgb = COLOR_WHITE
+        p_cn.alignment = PP_ALIGN.CENTER
+
+        # 2. Attributes Compartment
+        attr_top = top + h_height + 0.05
+        attr_height = 0.22 * len(attributes) + 0.15
+        tb_a = slide.shapes.add_textbox(Inches(left + 0.1), Inches(attr_top), Inches(width - 0.2), Inches(attr_height))
+        tf_a = tb_a.text_frame
+        tf_a.word_wrap = True
+        for i, a in enumerate(attributes):
+            p = tf_a.paragraphs[0] if i == 0 else tf_a.add_paragraph()
+            p.text = a
+            p.font.size = Pt(8.5)
+            p.font.name = "Consolas"
+            p.font.color.rgb = COLOR_NAVY
+            p.space_before = Pt(2) if i > 0 else Pt(0)
+
+        # Divider Line between Attributes and Methods
+        div_top = attr_top + attr_height
+        div = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(left + 0.08), Inches(div_top), Inches(width - 0.16), Inches(0.015))
+        div.fill.solid()
+        div.fill.fore_color.rgb = COLOR_CARD_BORDER
+        div.line.fill.background()
+
+        # 3. Methods / Operations Compartment
+        meth_top = div_top + 0.05
+        meth_height = height - (meth_top - top) - 0.08
+        tb_m = slide.shapes.add_textbox(Inches(left + 0.1), Inches(meth_top), Inches(width - 0.2), Inches(meth_height))
+        tf_m = tb_m.text_frame
+        tf_m.word_wrap = True
+        for i, m in enumerate(methods):
+            p = tf_m.paragraphs[0] if i == 0 else tf_m.add_paragraph()
+            p.text = m
+            p.font.size = Pt(8.5)
+            p.font.name = "Consolas"
+            p.font.color.rgb = COLOR_DARK_BLUE
+            p.space_before = Pt(2) if i > 0 else Pt(0)
+
+    # Class 1: Category
+    draw_uml_class(s4, 0.8, 1.4, 3.4, 2.35, "Category", "Entity",
+                   ["- id: int [PK]", "- name: string", "- description: string"],
+                   ["+ getItems(): List<InventoryItem>", "+ getStorageProfile(): string"],
+                   COLOR_DARK_BLUE)
+
+    # Class 2: InventoryItem (Central)
+    draw_uml_class(s4, 4.8, 1.4, 3.8, 3.1, "InventoryItem", "Aggregate Root",
+                   ["- id: int [PK]", "- categoryId: int [FK]", "- name: string", "- unit: string", "- minThreshold: float"],
+                   ["+ calculateCurrentStock(): float", "+ getNearestExpiration(): Date", "+ evaluateStatus(): StatusBadge", "+ isLowStock(): boolean"],
+                   COLOR_NAVY)
+
+    # Class 3: InventoryTransaction
+    draw_uml_class(s4, 9.2, 1.4, 3.4, 3.1, "InventoryTransaction", "Entity",
+                   ["- id: int [PK]", "- itemId: int [FK]", "- transactionType: 'IN'|'OUT'", "- quantity: float", "- purchaseDate: Date", "- expirationDate: Date", "- reason: string"],
+                   ["+ isExpired(today: Date): boolean", "+ isExpiringSoon(days=3): boolean"],
+                   COLOR_PRIMARY)
+
+    # Class 4: AlertEngine (Service)
+    draw_uml_class(s4, 0.8, 4.2, 3.4, 2.5, "AlertEngine", "Domain Service",
+                   ["- alertHorizonDays: int = 3", "- replenishmentMultiplier: float = 2.0"],
+                   ["+ evaluateExpiringLots(): List<Alert>", "+ evaluateShoppingList(): List<Item>", "+ calculateReorderQty(): float"],
+                   COLOR_EMERALD)
+
+    # Class 5: StockInDTO / StockOutDTO (Payload Data Structures)
+    draw_uml_class(s4, 4.8, 4.75, 7.8, 1.95, "TransactionPayloads (DTOs)", "Data Transfer Objects",
+                   ["+ StockInDTO: { itemId: int, quantity: float, purchaseDate: Date, expirationDate: Date, reason: string }",
+                    "+ StockOutDTO: { itemId: int, quantity: float, reason: 'Used/Consumed' | 'Spoiled/Expired' | 'Transferred' }"],
+                   ["+ validateInbound(): ValidationResult", "+ validateOutbound(currentStock: float): ValidationResult"],
+                   RGBColor(71, 85, 105))
+
+    # Relationship Connectors & Annotations
+    # Connector 1: Category 1 --- 0..* InventoryItem
+    tb_c1 = s4.shapes.add_textbox(Inches(4.15), Inches(2.2), Inches(0.7), Inches(0.4))
+    p_c1 = tb_c1.text_frame.paragraphs[0]
+    p_c1.text = "1 ─── 0..*\n«has»"
+    p_c1.font.size = Pt(8)
+    p_c1.font.bold = True
+    p_c1.font.color.rgb = COLOR_PRIMARY
+    p_c1.alignment = PP_ALIGN.CENTER
+
+    # Connector 2: InventoryItem 1 --- 0..* InventoryTransaction
+    tb_c2 = s4.shapes.add_textbox(Inches(8.55), Inches(2.2), Inches(0.7), Inches(0.4))
+    p_c2 = tb_c2.text_frame.paragraphs[0]
+    p_c2.text = "1 ─── 0..*\n«logs»"
+    p_c2.font.size = Pt(8)
+    p_c2.font.bold = True
+    p_c2.font.color.rgb = COLOR_PRIMARY
+    p_c2.alignment = PP_ALIGN.CENTER
+
+    add_footer(s4, 4)
+
+    # ==========================================
+    # SLIDE 5: CLASS-RESPONSIBILITY-COLLABORATOR (CRC) CARDS
+    # ==========================================
+    s5 = prs.slides.add_slide(blank_layout)
+    add_header(s5, "4. Class-Responsibility-Collaborator (CRC) Cards")
+
+    def draw_crc_card(slide, left, top, width, height, class_name, stereotype, responsibilities, collaborators, header_color):
+        # Outer index card
+        card = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(left), Inches(top), Inches(width), Inches(height))
+        card.fill.solid()
+        card.fill.fore_color.rgb = COLOR_CARD_BG
+        card.line.color.rgb = header_color
+        card.line.width = Pt(1.5)
+
+        # Header bar
+        hdr = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(left), Inches(top), Inches(width), Inches(0.55))
+        hdr.fill.solid()
+        hdr.fill.fore_color.rgb = header_color
+        hdr.line.fill.background()
+        tf_h = hdr.text_frame
+        p_h = tf_h.paragraphs[0]
+        p_h.text = f"CLASS: {class_name.upper()}   «{stereotype}»"
+        p_h.font.size = Pt(11)
+        p_h.font.bold = True
+        p_h.font.color.rgb = COLOR_WHITE
+        p_h.alignment = PP_ALIGN.CENTER
+
+        # Vertical Divider (60% Responsibilities / 40% Collaborators)
+        resp_width = width * 0.60
+        collab_width = width * 0.40 - 0.2
+        collab_left = left + resp_width + 0.1
+
+        v_line = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(left + resp_width), Inches(top + 0.62), Inches(0.015), Inches(height - 0.72))
+        v_line.fill.solid()
+        v_line.fill.fore_color.rgb = COLOR_CARD_BORDER
+        v_line.line.fill.background()
+
+        # Left Column: Responsibilities
+        tb_r = slide.shapes.add_textbox(Inches(left + 0.15), Inches(top + 0.62), Inches(resp_width - 0.25), Inches(height - 0.75))
+        tf_r = tb_r.text_frame
+        tf_r.word_wrap = True
+        p_rt = tf_r.paragraphs[0]
+        p_rt.text = "RESPONSIBILITIES (What it Knows & Does):"
+        p_rt.font.size = Pt(9.5)
+        p_rt.font.bold = True
+        p_rt.font.color.rgb = header_color
+        
+        for r in responsibilities:
+            pr = tf_r.add_paragraph()
+            pr.text = f"• {r}"
+            pr.font.size = Pt(9)
+            pr.font.color.rgb = COLOR_TEXT_MAIN
+            pr.space_before = Pt(4)
+
+        # Right Column: Collaborators
+        tb_c = slide.shapes.add_textbox(Inches(collab_left), Inches(top + 0.62), Inches(collab_width), Inches(height - 0.75))
+        tf_c = tb_c.text_frame
+        tf_c.word_wrap = True
+        p_ct = tf_c.paragraphs[0]
+        p_ct.text = "COLLABORATORS:"
+        p_ct.font.size = Pt(9.5)
+        p_ct.font.bold = True
+        p_ct.font.color.rgb = COLOR_NAVY
+        
+        for c in collaborators:
+            pc = tf_c.add_paragraph()
+            pc.text = f"• {c}"
+            pc.font.size = Pt(9)
             pc.font.color.rgb = COLOR_TEXT_MAIN
-            pc.space_before = Pt(3)
-    add_footer(s7, 7)
+            pc.space_before = Pt(4)
+
+    crc_list = [
+        ("InventoryItem", "Aggregate Root",
+         ["Maintains ingredient identity, category FK, unit, and min threshold.",
+          "Calculates live aggregate stock from transaction history (IN - OUT).",
+          "Determines nearest expiration date across active positive batches.",
+          "Evaluates visual health status badge (Sufficient, Low Stock, Expired)."],
+         ["Category", "InventoryTransaction", "AlertEngine"],
+         COLOR_NAVY),
+
+        ("InventoryTransaction", "Entity",
+         ["Records atomic stock intake ('IN') with batch purchase & expiry dates.",
+          "Logs consumption/deduction ('OUT') with designated reason classification.",
+          "Validates batch expiration status against current date (FEFO rule).",
+          "Preserves immutable audit trail of all physical pantry movements."],
+         ["InventoryItem"],
+         COLOR_PRIMARY),
+
+        ("AlertEngine", "Domain Service",
+         ["Continuously evaluates batch expiration horizons (3-day lookahead).",
+          "Emits prioritized expiration alerts for the top dashboard banner.",
+          "Scans all inventory items for deficits below minimum threshold.",
+          "Auto-generates Reorder Shopping List with replenishment quantities."],
+         ["InventoryItem", "InventoryTransaction"],
+         COLOR_EMERALD)
+    ]
+
+    for idx, (cname, stype, resps, collabs, col) in enumerate(crc_list):
+        draw_crc_card(s5, 0.8, 1.4 + idx * 1.82, 11.733, 1.68, cname, stype, resps, collabs, col)
+
+    add_footer(s5, 5)
 
     # ==========================================
-    # SLIDE 8: INBOUND STOCK-IN WORKFLOW
+    # SLIDE 6: INBOUND STOCK-IN WORKFLOW
     # ==========================================
-    s8 = prs.slides.add_slide(blank_layout)
-    add_header(s8, "7. Inbound Stock-In Workflow & Category Filter Feature")
+    s6 = prs.slides.add_slide(blank_layout)
+    add_header(s6, "5. Inbound Stock-In Workflow & Category Filter Feature")
 
     steps_in = [
         ("Step 1: Open Stock-In Modal", "User clicks '+ In' on an inventory row or '+ Stock In' from the dashboard."),
@@ -452,13 +441,13 @@ CREATE TABLE inventory_transactions (
     ]
 
     for idx, (stitle, sdesc) in enumerate(steps_in):
-        sbox = s8.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(1.0), Inches(1.4 + idx * 1.05), Inches(11.3), Inches(0.95))
+        sbox = s6.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(1.0), Inches(1.4 + idx * 1.05), Inches(11.3), Inches(0.95))
         sbox.fill.solid()
         sbox.fill.fore_color.rgb = COLOR_WHITE
         sbox.line.color.rgb = COLOR_PRIMARY
         sbox.line.width = Pt(1.5)
 
-        num_badge = s8.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(1.15), Inches(1.52 + idx * 1.05), Inches(0.7), Inches(0.7))
+        num_badge = s6.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(1.15), Inches(1.52 + idx * 1.05), Inches(0.7), Inches(0.7))
         num_badge.fill.solid()
         num_badge.fill.fore_color.rgb = COLOR_PRIMARY
         num_badge.line.fill.background()
@@ -470,7 +459,7 @@ CREATE TABLE inventory_transactions (
         p_nb.font.color.rgb = COLOR_WHITE
         p_nb.alignment = PP_ALIGN.CENTER
 
-        tb_step = s8.shapes.add_textbox(Inches(2.0), Inches(1.45 + idx * 1.05), Inches(10.1), Inches(0.85))
+        tb_step = s6.shapes.add_textbox(Inches(2.0), Inches(1.45 + idx * 1.05), Inches(10.1), Inches(0.85))
         tf_s = tb_step.text_frame
         tf_s.word_wrap = True
         p_st = tf_s.paragraphs[0]
@@ -484,16 +473,16 @@ CREATE TABLE inventory_transactions (
         p_sd.font.size = Pt(9.5)
         p_sd.font.color.rgb = COLOR_TEXT_MAIN
         p_sd.space_before = Pt(2)
-    add_footer(s8, 8)
+    add_footer(s6, 6)
 
     # ==========================================
-    # SLIDE 9: OUTBOUND STOCK-OUT WORKFLOW
+    # SLIDE 7: OUTBOUND STOCK-OUT WORKFLOW
     # ==========================================
-    s9 = prs.slides.add_slide(blank_layout)
-    add_header(s9, "8. Outbound Stock-Out Workflow & Validation Rules")
+    s7 = prs.slides.add_slide(blank_layout)
+    add_header(s7, "6. Outbound Stock-Out Workflow & Validation Rules")
 
-    create_card(s9, 0.8, 1.4, 5.7, 5.35, "Stock-Out Execution Flow", COLOR_ROSE)
-    tb_so = s9.shapes.add_textbox(Inches(0.95), Inches(1.95), Inches(5.4), Inches(4.6))
+    create_card(s7, 0.8, 1.4, 5.7, 5.35, "Stock-Out Execution Steps", COLOR_ROSE)
+    tb_so = s7.shapes.add_textbox(Inches(0.95), Inches(1.95), Inches(5.4), Inches(4.6))
     tf_so = tb_so.text_frame
     tf_so.word_wrap = True
     so_steps = [
@@ -516,8 +505,8 @@ CREATE TABLE inventory_transactions (
         pd.font.color.rgb = COLOR_TEXT_MAIN
         pd.space_before = Pt(2)
 
-    create_card(s9, 6.8, 1.4, 5.7, 5.35, "Deduction Reason Definitions", COLOR_DARK_BLUE)
-    tb_reasons = s9.shapes.add_textbox(Inches(6.95), Inches(1.95), Inches(5.4), Inches(4.6))
+    create_card(s7, 6.8, 1.4, 5.7, 5.35, "Deduction Reason Definitions", COLOR_DARK_BLUE)
+    tb_reasons = s7.shapes.add_textbox(Inches(6.95), Inches(1.95), Inches(5.4), Inches(4.6))
     tf_rea = tb_reasons.text_frame
     tf_rea.word_wrap = True
     reasons = [
@@ -538,15 +527,15 @@ CREATE TABLE inventory_transactions (
         pd.font.size = Pt(9.5)
         pd.font.color.rgb = COLOR_TEXT_MAIN
         pd.space_before = Pt(2)
-    add_footer(s9, 9)
+    add_footer(s7, 7)
 
     # ==========================================
-    # SLIDE 10: REAL-TIME HEALTH STATUS BADGES
+    # SLIDE 8: REAL-TIME HEALTH STATUS BADGES
     # ==========================================
-    s10 = prs.slides.add_slide(blank_layout)
-    add_header(s10, "9. Real-Time Telemetry & 5 Status Badges")
+    s8 = prs.slides.add_slide(blank_layout)
+    add_header(s8, "7. Real-Time Telemetry & 5 Status Badges")
 
-    badges = [
+    badges_s8 = [
         ("SUFFICIENT (Green Badge)", "Trigger: current_stock >= min_threshold & No Expiring Batches", "Healthy stock level; no immediate action required.", COLOR_EMERALD),
         ("LOW_STOCK (Yellow Badge)", "Trigger: 0 < current_stock < min_threshold", "Inventory running low; automatically added to Reorder Shopping List.", RGBColor(234, 179, 8)),
         ("EXPIRING_SOON (Orange Badge)", "Trigger: 0 < (expiration_date - TODAY) <= 3 Days", "Batch near expiration; highlighted in top banner to prioritize usage.", COLOR_AMBER),
@@ -554,19 +543,19 @@ CREATE TABLE inventory_transactions (
         ("OUT_OF_STOCK (Red Badge)", "Trigger: current_stock <= 0", "Completely depleted; urgent restock required.", COLOR_NAVY)
     ]
 
-    for idx, (bname, btrig, bact, bcol) in enumerate(badges):
-        bcard = s10.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(1.0), Inches(1.4 + idx * 1.05), Inches(11.3), Inches(0.95))
+    for idx, (bname, btrig, bact, bcol) in enumerate(badges_s8):
+        bcard = s8.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(1.0), Inches(1.4 + idx * 1.05), Inches(11.3), Inches(0.95))
         bcard.fill.solid()
         bcard.fill.fore_color.rgb = COLOR_WHITE
         bcard.line.color.rgb = bcol
         bcard.line.width = Pt(1.5)
 
-        cbadge = s10.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(1.15), Inches(1.55 + idx * 1.05), Inches(0.35), Inches(0.65))
+        cbadge = s8.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(1.15), Inches(1.55 + idx * 1.05), Inches(0.35), Inches(0.65))
         cbadge.fill.solid()
         cbadge.fill.fore_color.rgb = bcol
         cbadge.line.fill.background()
 
-        tb_b = s10.shapes.add_textbox(Inches(1.65), Inches(1.45 + idx * 1.05), Inches(10.5), Inches(0.85))
+        tb_b = s8.shapes.add_textbox(Inches(1.65), Inches(1.45 + idx * 1.05), Inches(10.5), Inches(0.85))
         tf_b = tb_b.text_frame
         tf_b.word_wrap = True
 
@@ -581,16 +570,16 @@ CREATE TABLE inventory_transactions (
         p_bd.font.size = Pt(9.5)
         p_bd.font.color.rgb = COLOR_TEXT_MAIN
         p_bd.space_before = Pt(2)
-    add_footer(s10, 10)
+    add_footer(s8, 8)
 
     # ==========================================
-    # SLIDE 11: REORDER SHOPPING LIST ENGINE
+    # SLIDE 9: REORDER SHOPPING LIST ENGINE
     # ==========================================
-    s11 = prs.slides.add_slide(blank_layout)
-    add_header(s11, "10. Automated Reorder Shopping List Engine")
+    s9 = prs.slides.add_slide(blank_layout)
+    add_header(s9, "8. Automated Reorder Shopping List Engine")
 
-    create_card(s11, 0.8, 1.4, 5.7, 5.35, "Reorder Calculation Formula", COLOR_PRIMARY)
-    tb_calc = s11.shapes.add_textbox(Inches(0.95), Inches(1.95), Inches(5.4), Inches(4.6))
+    create_card(s9, 0.8, 1.4, 5.7, 5.35, "Reorder Calculation Formula", COLOR_PRIMARY)
+    tb_calc = s9.shapes.add_textbox(Inches(0.95), Inches(1.95), Inches(5.4), Inches(4.6))
     tf_calc = tb_calc.text_frame
     tf_calc.word_wrap = True
     
@@ -598,114 +587,112 @@ CREATE TABLE inventory_transactions (
     p_eq.text = "Replenishment Target Formula:"
     p_eq.font.size = Pt(11)
     p_eq.font.bold = True
-    p_eq.font.color.rgb = COLOR_NAVY
-
-    peq1 = tf_calc.add_paragraph()
-    peq1.text = "Target Stock = 2 × min_threshold\nSuggested Reorder = MAX(1, Target Stock - current_stock)"
-    peq1.font.size = Pt(10)
-    peq1.font.name = "Courier New"
-    peq1.font.color.rgb = COLOR_PRIMARY
-    peq1.space_before = Pt(4)
+    p_eq.font.color.rgb = COLOR_PRIMARY
+    
+    p_f1 = tf_calc.add_paragraph()
+    p_f1.text = "Target Stock Level = 2 × min_threshold\nSuggested Reorder = MAX(1, Target - Current Stock)"
+    p_f1.font.size = Pt(10)
+    p_f1.font.name = "Consolas"
+    p_f1.font.color.rgb = COLOR_NAVY
+    p_f1.space_before = Pt(4)
 
     p_ex = tf_calc.add_paragraph()
-    p_ex.text = "\nExample Calculation (Lemons):"
+    p_ex.text = "\nExample Calculation:"
     p_ex.font.size = Pt(11)
     p_ex.font.bold = True
-    p_ex.font.color.rgb = COLOR_NAVY
-    p_ex.space_before = Pt(8)
+    p_ex.font.color.rgb = COLOR_PRIMARY
 
-    pex1 = tf_calc.add_paragraph()
-    pex1.text = "• Min Threshold: 10.0 units\n• Current Stock: 2.0 units\n• Target Level: 20.0 units\n• Suggested Reorder: 18.0 units (Urgency: HIGH)"
-    pex1.font.size = Pt(9.5)
-    pex1.font.color.rgb = COLOR_TEXT_MAIN
-    pex1.space_before = Pt(2)
+    p_exd = tf_calc.add_paragraph()
+    p_exd.text = "• Item: Lemons (Min: 10 units, Current: 2 units)\n• Target: 2 × 10 = 20 units\n• Suggested Reorder: 20 - 2 = 18 units (Urgency: HIGH)\n\n• Item: Strawberries (Min: 1.5 kg, Current: 0 kg)\n• Target: 2 × 1.5 = 3.0 kg\n• Suggested Reorder: 3.0 kg (Urgency: CRITICAL)"
+    p_exd.font.size = Pt(9.5)
+    p_exd.font.color.rgb = COLOR_TEXT_MAIN
+    p_exd.space_before = Pt(3)
 
-    create_card(s11, 6.8, 1.4, 5.7, 5.35, "Shopping List Modal Features", COLOR_DARK_BLUE)
-    tb_shop = s11.shapes.add_textbox(Inches(6.95), Inches(1.95), Inches(5.4), Inches(4.6))
-    tf_shop = tb_shop.text_frame
-    tf_shop.word_wrap = True
-    shop_features = [
-        ("Automated Compilation", "GET /api/alerts/shopping-list dynamically gathers all depleted items below threshold."),
-        ("One-Click Access", "Top header button displays a live red badge count with total deficit items."),
-        ("Urgency Badges", "Tags depleted stock (<= 0) as 'CRITICAL' and low stock as 'HIGH'."),
-        ("Category Breakdown", "Organizes items by category with exact units for easy in-store or online grocery purchasing.")
+    create_card(s9, 6.8, 1.4, 5.7, 5.35, "Shopping List UI & 1-Click Quick Restock", COLOR_EMERALD)
+    tb_sl = s9.shapes.add_textbox(Inches(6.95), Inches(1.95), Inches(5.4), Inches(4.6))
+    tf_sl = tb_sl.text_frame
+    tf_sl.word_wrap = True
+    sl_features = [
+        ("⚡ 1-Click Instant Restock", "Click '+[Qty]' directly in modal to stock in suggested quantity without leaving the view."),
+        ("Real-Time Red Badge Counter", "Header badge automatically tracks the exact count of items requiring restocking."),
+        ("Search Inside Modal", "Instant search bar allows quick filtering of large shopping lists by name or category."),
+        ("Print / Export Support", "One-click 'Print / Export List' formats the table cleanly for mobile or physical grocery shopping.")
     ]
-    for idx, (sftitle, sfdesc) in enumerate(shop_features):
-        p = tf_shop.paragraphs[0] if idx == 0 else tf_shop.add_paragraph()
-        p.text = f"✔ {sftitle}"
+    for idx, (ftitle, fdesc) in enumerate(sl_features):
+        p = tf_sl.paragraphs[0] if idx == 0 else tf_sl.add_paragraph()
+        p.text = f"✔ {ftitle}"
         p.font.size = Pt(11)
         p.font.bold = True
-        p.font.color.rgb = COLOR_DARK_BLUE
+        p.font.color.rgb = COLOR_EMERALD
         p.space_before = Pt(8) if idx > 0 else Pt(0)
         
-        pd = tf_shop.add_paragraph()
-        pd.text = sfdesc
+        pd = tf_sl.add_paragraph()
+        pd.text = fdesc
         pd.font.size = Pt(9.5)
         pd.font.color.rgb = COLOR_TEXT_MAIN
         pd.space_before = Pt(2)
-    add_footer(s11, 11)
+    add_footer(s9, 9)
 
     # ==========================================
-    # SLIDE 12: CORE MODULES & CODE BREAKDOWN
+    # SLIDE 10: CORE MODULES & CODE IMPLEMENTATION
     # ==========================================
-    s12 = prs.slides.add_slide(blank_layout)
-    add_header(s12, "11. Core Modules & Code Implementation Breakdown")
+    s10 = prs.slides.add_slide(blank_layout)
+    add_header(s10, "9. Core Modules & Code Implementation Breakdown")
 
-    create_card(s12, 0.8, 1.4, 5.7, 5.35, "Backend Modules (Node / Express / SQLite)", COLOR_PRIMARY)
-    tb_m = s12.shapes.add_textbox(Inches(0.95), Inches(1.95), Inches(5.4), Inches(4.6))
-    tf_m = tb_m.text_frame
-    tf_m.word_wrap = True
+    create_card(s10, 0.8, 1.4, 5.7, 5.35, "Backend Modules (Node / Express / SQLite)", COLOR_PRIMARY)
+    tb_m10 = s10.shapes.add_textbox(Inches(0.95), Inches(1.95), Inches(5.4), Inches(4.6))
+    tf_m10 = tb_m10.text_frame
+    tf_m10.word_wrap = True
     be_modules = [
         ("server.js", "Express REST server hosting /api/categories, /api/items, /api/transactions/in, /api/transactions/out, /api/dashboard/summary, and /api/alerts/*."),
         ("db.js", "SQLite database connection manager with async run(), get(), all() helper wrappers and auto-initialization."),
         ("schema.sql & seed.sql", "DDL script defining categories, items, and inventory_transactions with realistic sample items.")
     ]
     for idx, (mtitle, mdesc) in enumerate(be_modules):
-        p = tf_m.paragraphs[0] if idx == 0 else tf_m.add_paragraph()
+        p = tf_m10.paragraphs[0] if idx == 0 else tf_m10.add_paragraph()
         p.text = f"• {mtitle}"
         p.font.size = Pt(10.5)
         p.font.bold = True
         p.font.color.rgb = COLOR_PRIMARY
         p.space_before = Pt(6) if idx > 0 else Pt(0)
         
-        pd = tf_m.add_paragraph()
+        pd = tf_m10.add_paragraph()
         pd.text = mdesc
         pd.font.size = Pt(9.5)
         pd.font.color.rgb = COLOR_TEXT_MAIN
         pd.space_before = Pt(2)
 
-    create_card(s12, 6.8, 1.4, 5.7, 5.35, "Frontend Modules (React 18 + Vite)", COLOR_DARK_BLUE)
-    tb_fe = s12.shapes.add_textbox(Inches(6.95), Inches(1.95), Inches(5.4), Inches(4.6))
-    tf_fe = tb_fe.text_frame
-    tf_fe.word_wrap = True
+    create_card(s10, 6.8, 1.4, 5.7, 5.35, "Frontend Modules (React 18 + Vite)", COLOR_DARK_BLUE)
+    tb_fe10 = s10.shapes.add_textbox(Inches(6.95), Inches(1.95), Inches(5.4), Inches(4.6))
+    tf_fe10 = tb_fe10.text_frame
+    tf_fe10.word_wrap = True
     fe_modules = [
-        ("App.jsx", "Root orchestrator managing data fetch, search/category state, alert banners, and modal visibility."),
-        ("StockInModal.jsx / StockOutModal.jsx", "Enhanced modals featuring live category dropdown filtering and instant material search."),
+        ("App.jsx", "Root orchestrator managing live data fetch, search/category state, alert banners, and modal sync."),
+        ("StockInModal.jsx / StockOutModal.jsx", "Modals featuring live category dropdown filtering, keyword search, and validation."),
         ("InventoryTable.jsx & CategoryGrid.jsx", "Renderable interactive tables and cards with color-coded status badges."),
-        ("ShoppingListModal.jsx", "Reorder modal displaying all low-stock items with suggested replenishment quantities.")
+        ("ShoppingListModal.jsx", "Reorder modal displaying low-stock items with 1-click Quick Restock and export tools.")
     ]
     for idx, (vtitle, vdesc) in enumerate(fe_modules):
-        p = tf_fe.paragraphs[0] if idx == 0 else tf_fe.add_paragraph()
+        p = tf_fe10.paragraphs[0] if idx == 0 else tf_fe10.add_paragraph()
         p.text = f"• {vtitle}"
         p.font.size = Pt(10.5)
         p.font.bold = True
         p.font.color.rgb = COLOR_DARK_BLUE
         p.space_before = Pt(6) if idx > 0 else Pt(0)
         
-        pd = tf_fe.add_paragraph()
+        pd = tf_fe10.add_paragraph()
         pd.text = vdesc
         pd.font.size = Pt(9.5)
         pd.font.color.rgb = COLOR_TEXT_MAIN
         pd.space_before = Pt(2)
-    add_footer(s12, 12)
+    add_footer(s10, 10)
 
     # ==========================================
-    # SLIDE 13: SIMPLIFIED PROTOTYPE SUMMARY & LIVE URL
+    # SLIDE 11: SUMMARY & LIVE VERCEL DEPLOYMENT
     # ==========================================
-    s13 = prs.slides.add_slide(blank_layout)
-    add_header(s13, "12. Summary & Live Prototype Deployment")
+    s11 = prs.slides.add_slide(blank_layout)
+    add_header(s11, "10. Summary & Live Prototype Deployment")
 
-    # 4 clean summary cards in a 2x2 grid (adjusted height to accommodate live link banner)
     summary_cards = [
         ("1. Accurate Stock Tracking", "Maintains exact real-time quantities and batch expiration dates across all 6 food groups with zero data loss.", COLOR_PRIMARY),
         ("2. Instant Material Discovery", "Category filter dropdowns and keyword search in Stock-In/Out modals allow users to find items in seconds.", COLOR_EMERALD),
@@ -716,8 +703,8 @@ CREATE TABLE inventory_transactions (
     for idx, (stitle, sdesc, scolor) in enumerate(summary_cards):
         r = idx // 2
         c = idx % 2
-        card = create_card(s13, 1.0 + c * 5.8, 1.38 + r * 2.2, 5.5, 2.05, stitle, scolor)
-        tb = s13.shapes.add_textbox(Inches(1.2 + c * 5.8), Inches(1.92 + r * 2.2), Inches(5.1), Inches(1.35))
+        card = create_card(s11, 1.0 + c * 5.8, 1.38 + r * 2.2, 5.5, 2.05, stitle, scolor)
+        tb = s11.shapes.add_textbox(Inches(1.2 + c * 5.8), Inches(1.92 + r * 2.2), Inches(5.1), Inches(1.35))
         tf = tb.text_frame
         tf.word_wrap = True
         p = tf.paragraphs[0]
@@ -727,13 +714,13 @@ CREATE TABLE inventory_transactions (
         p.line_spacing = 1.25
 
     # Live Vercel Deployment Link Banner
-    live_banner = s13.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(1.0), Inches(5.95), Inches(11.3), Inches(0.95))
+    live_banner = s11.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(1.0), Inches(5.95), Inches(11.3), Inches(0.95))
     live_banner.fill.solid()
     live_banner.fill.fore_color.rgb = COLOR_NAVY
     live_banner.line.color.rgb = COLOR_EMERALD
     live_banner.line.width = Pt(2)
 
-    tb_live = s13.shapes.add_textbox(Inches(1.2), Inches(6.0), Inches(10.9), Inches(0.85))
+    tb_live = s11.shapes.add_textbox(Inches(1.2), Inches(6.0), Inches(10.9), Inches(0.85))
     tf_l = tb_live.text_frame
     tf_l.word_wrap = True
     
@@ -750,10 +737,16 @@ CREATE TABLE inventory_transactions (
     p_l2.font.color.rgb = COLOR_EMERALD
     p_l2.space_before = Pt(2)
 
-    add_footer(s13, 13)
+    add_footer(s11, 11)
 
-    prs.save(OUTPUT_PPTX)
-    print(f"Successfully generated clean {TOTAL_SLIDES}-slide presentation at: {OUTPUT_PPTX}")
+    # Save presentation
+    output_files = ['RIMS_System_Specification_Updated.pptx', 'RIMS_System_Specification.pptx']
+    for out_path in output_files:
+        try:
+            prs.save(out_path)
+            print(f"Successfully saved {TOTAL_SLIDES}-slide presentation to: {out_path}")
+        except PermissionError:
+            print(f"Note: Could not overwrite '{out_path}' because it is currently open in PowerPoint.")
 
 if __name__ == "__main__":
-    create_presentation()
+    build_presentation()
