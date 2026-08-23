@@ -1,8 +1,19 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { X, Plus, Calendar, PackagePlus, Filter, Search, Tag } from 'lucide-react';
 
+const DEFAULT_CATEGORIES = [
+  { id: 1, name: 'Fruits' },
+  { id: 2, name: 'Vegetables' },
+  { id: 3, name: 'Dairy Products' },
+  { id: 4, name: 'Baking Products' },
+  { id: 5, name: 'Dessert Products' },
+  { id: 6, name: 'Raw Materials & Other' }
+];
+
 export default function StockInModal({ isOpen, onClose, items = [], categories = [], preSelectedItem, onSubmit, onOpenNewItemModal }) {
   if (!isOpen) return null;
+
+  const validCategories = categories && categories.length > 0 ? categories : DEFAULT_CATEGORIES;
 
   const [filterCategory, setFilterCategory] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
@@ -111,7 +122,7 @@ export default function StockInModal({ isOpen, onClose, items = [], categories =
                   style={{ fontSize: '0.84rem', padding: '8px 10px', background: '#1e293b' }}
                 >
                   <option value="">📂 All Categories ({items.length})</option>
-                  {categories.map(cat => {
+                  {validCategories.map(cat => {
                     const count = items.filter(i => String(i.category_id) === String(cat.id)).length;
                     return (
                       <option key={cat.id} value={cat.id}>

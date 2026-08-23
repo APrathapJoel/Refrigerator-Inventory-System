@@ -11,9 +11,18 @@ import { Clock } from 'lucide-react';
 
 const API_BASE = import.meta.env.VITE_API_URL || '/api';
 
+const DEFAULT_CATEGORIES = [
+  { id: 1, name: 'Fruits' },
+  { id: 2, name: 'Vegetables' },
+  { id: 3, name: 'Dairy Products' },
+  { id: 4, name: 'Baking Products' },
+  { id: 5, name: 'Dessert Products' },
+  { id: 6, name: 'Raw Materials & Other' }
+];
+
 export default function App() {
   const [summary, setSummary] = useState(null);
-  const [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useState(DEFAULT_CATEGORIES);
   const [items, setItems] = useState([]);
   const [expiringAlerts, setExpiringAlerts] = useState([]);
   const [shoppingList, setShoppingList] = useState([]);

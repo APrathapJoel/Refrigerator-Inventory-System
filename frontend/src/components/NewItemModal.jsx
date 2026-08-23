@@ -1,10 +1,20 @@
 import React, { useState } from 'react';
 import { X, PlusCircle } from 'lucide-react';
 
-export default function NewItemModal({ isOpen, onClose, categories, onSubmit }) {
+const DEFAULT_CATEGORIES = [
+  { id: 1, name: 'Fruits' },
+  { id: 2, name: 'Vegetables' },
+  { id: 3, name: 'Dairy Products' },
+  { id: 4, name: 'Baking Products' },
+  { id: 5, name: 'Dessert Products' },
+  { id: 6, name: 'Raw Materials & Other' }
+];
+
+export default function NewItemModal({ isOpen, onClose, categories = [], onSubmit }) {
   if (!isOpen) return null;
 
-  const [categoryId, setCategoryId] = useState(categories && categories.length > 0 ? categories[0].id : 1);
+  const validCategories = categories && categories.length > 0 ? categories : DEFAULT_CATEGORIES;
+  const [categoryId, setCategoryId] = useState(validCategories[0].id);
   const [name, setName] = useState('');
   const [unit, setUnit] = useState('kg');
   const [minThreshold, setMinThreshold] = useState('1.0');
@@ -51,7 +61,7 @@ export default function NewItemModal({ isOpen, onClose, categories, onSubmit }) 
               value={categoryId}
               onChange={(e) => setCategoryId(e.target.value)}
             >
-              {categories.map(cat => (
+              {validCategories.map(cat => (
                 <option key={cat.id} value={cat.id}>{cat.name}</option>
               ))}
             </select>

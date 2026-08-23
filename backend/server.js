@@ -8,8 +8,24 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-// Initialize Database on Startup
-initDb();
+// Database initialization promise
+let dbReadyPromise = null;
+function ensureDbReady() {
+    if (!dbReadyPromise) {
+        dbReadyPromise = initDb();
+    }
+    return dbReadyPromise;
+}
+
+// Middleware to ensure DB is initialized before handling requests
+app.use(async (req, res, next) => {
+    try {
+        await ensureDbReady();
+        next();
+    } catch (err) {
+        next(err);
+    }
+});
 
 /**
  * Utility function to compute stock status badge for an item
